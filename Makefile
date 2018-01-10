@@ -228,7 +228,13 @@ submodule_check:
 submodules:
 	-test -d .git -a .gitmodules -a -f Makefile.git && $(MAKE) -f Makefile.git submodules
 
-all: submodule_check $(BUILDDIR)manifest.ttl $(BUILDDIR)$(LV2NAME).ttl $(targets) $(JACKAPP)
+ifneq ($(MOD),)
+	SUBMODULE_DEP=
+else
+	SUBMODULE_DEP=submodule_check
+endif
+
+all: $(SUBMODULE_DEP) $(BUILDDIR)manifest.ttl $(BUILDDIR)$(LV2NAME).ttl $(targets) $(JACKAPP)
 
 $(BUILDDIR)manifest.ttl: lv2ttl/manifest.gui.in lv2ttl/manifest.lv2.ttl.in lv2ttl/manifest.ttl.in lv2ttl/manifest.modgui.in Makefile
 	@mkdir -p $(BUILDDIR)
